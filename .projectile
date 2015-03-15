@@ -1,0 +1,12 @@
+-/.git
+-/target
+-/.lein-repl-history
+-/.lein-plugins
+-/lib
+-/.lein-deps-sum
+-\.git
+-\target
+-\.lein-repl-history
+-\.lein-plugins
+-\lib
+-\.lein-deps-sum
