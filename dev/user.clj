@@ -20,6 +20,7 @@
     [clojure-imdb.infrastructure :as infrastructure])
   (:use
     [clojure-imdb.persistence :as persistence]
+    [clojure-imdb.sample-dataset :as sample-dataset]
     [midje.repl]))
 
 (def system
