@@ -30,12 +30,12 @@
   ([location]
     (last (clojure.string/split location #"/"))))
 
-(defn create-actor [actor]
-  (get-location (app-post "/actors" actor)))
+(defn create-person [person]
+  (get-location (app-post "/persons" person)))
 
-(defn create-actor-and-get-id
-  ([actor]
-    (get-id (create-actor actor))))
+(defn create-person-and-get-id
+  ([person]
+    (get-id (create-person person))))
 
 (defn create-film
   ([film]
@@ -45,11 +45,11 @@
   ([film]
     (get-id (create-film film))))
 
-(defn link-film-to-actor
-  ([film-id actor-id]
-    (app-post (str "/film/" film-id "/actors/") { :id actor-id })))
+(defn link-film-to-person
+  ([film-id person-id]
+    (app-post (str "/film/" film-id "/persons/") { :id person-id })))
 
 (defn with-id
-  ([actor id]
-    (merge {:id id} actor)))
+  ([person id]
+    (merge {:id id} person)))
 

@@ -7,15 +7,15 @@
   ([x vals]
     (some #{x} vals)))
 
-(defn- load-actors
-  ([acc actors]
+(defn- load-persons
+  ([acc persons]
     (reduce
       (fn [acc x]
-        (if (member-of? x (keys (acc :actors)))
+        (if (member-of? x (keys (acc :persons)))
           acc
-          (assoc-in acc [:actors x] (create-actor-and-get-id {:name x}))))
+          (assoc-in acc [:persons x] (create-person-and-get-id {:name x}))))
       acc
-      actors)))
+      persons)))
 
 (defn- load-films
   ([acc films]
@@ -27,27 +27,27 @@
       acc
       films)))
 
-(defn- load-films-to-actors
-  ([acc [film actors]]
-    (doall (for [actor actors]
+(defn- load-films-to-persons
+  ([acc [film persons]]
+    (doall (for [person persons]
              (let [ film-id  (get-in acc [:films film])
-                    actor-id (get-in acc [:actors actor]) ]
-               (link-film-to-actor film-id actor-id))))
+                    person-id (get-in acc [:persons person]) ]
+               (link-film-to-person film-id person-id))))
     acc))
 
-(defn- load-films-and-actors
-  ([acc [film actors]]
+(defn- load-films-and-persons
+  ([acc [film persons]]
     (-> acc
       (load-films [film])
-      (load-actors actors)
-      (load-films-to-actors [film actors]))))
+      (load-persons persons)
+      (load-films-to-persons [film persons]))))
 
 (defn- load-dataset
   ([dataset]
     (reduce
-      load-films-and-actors
+      load-films-and-persons
       { :films  {}
-        :actors {} }
+        :persons {} }
       dataset)))
 
 (defn load-sample-dataset

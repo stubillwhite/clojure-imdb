@@ -5,37 +5,40 @@
     [cheshire.core :refer [parse-string generate-string]]
     [ring.mock.request :refer [request body content-type header]]
     [clojure.walk :refer [keywordize-keys]]
+    [clojure-imdb.infrastructure :refer [clean datasource]]
     [clojure-imdb.common]
     [clojure-imdb.rest])
   (:import
     [javax.servlet.http HttpServletResponse]))
 
-(def actor-one { :name "actor-one" })
-(def actor-two { :name "actor-two" })
+(clean datasource)
+
+(def person-one { :name "person-one" })
+(def person-two { :name "person-two" })
 
 (fact
-  "Get actor given actor exists then actor"
-  (let [ id       (create-actor-and-get-id actor-one)
-         location (str "/actor/" id)
+  "Get person given person exists then person"
+  (let [ id       (create-person-and-get-id person-one)
+         location (str "/person/" id)
          response (app-get location) ]
     (response :status)                         => HttpServletResponse/SC_OK
-    (extract-body response)                    => (with-id actor-one id)
+    (extract-body response)                    => (with-id person-one id)
     (get-in response [:headers :Content-Type]) => "application/json"))
 
 (fact
-  "Get actor given actor does not exist then not found"
-  (let [ response (app-get "/actor/12345") ]
+  "Get person given person does not exist then not found"
+  (let [ response (app-get "/person/12345") ]
     (response :status)                         => HttpServletResponse/SC_NOT_FOUND
     (get-in response [:headers :Content-Type]) => "application/json"))
 
 (fact
-  "Get actors given actors exist then actors"
-  (let [ id-one          (create-actor-and-get-id actor-one)
-         id-two          (create-actor-and-get-id actor-two)
-         expected-actors [(with-id actor-one id-one) (with-id actor-two id-two)]
-         response        (app-get "/actors") ]
+  "Get persons given persons exist then persons"
+  (let [ id-one          (create-person-and-get-id person-one)
+         id-two          (create-person-and-get-id person-two)
+         expected-persons [(with-id person-one id-one) (with-id person-two id-two)]
+         response        (app-get "/persons") ]
     (response :status)                         => HttpServletResponse/SC_OK
-    (extract-body response)                       => (contains expected-actors :in-any-order)
+    (extract-body response)                       => (contains expected-persons :in-any-order)
     (get-in response [:headers :Content-Type]) => "application/json"))
 
 (def film-one { :title "film-one" })
@@ -59,7 +62,7 @@
 (fact
   "FOO"
   (let [ film-id  (create-film-and-get-id film-one)
-         actor-id (create-actor-and-get-id actor-one)
-         response (app-post (str "/film/" film-id "/actors/") { :id actor-id }) ]
+         person-id (create-person-and-get-id person-one)
+         response (app-post (str "/film/" film-id "/persons/") { :id person-id }) ]
     (get-in response [:headers :Content-Type]) => "application/json"))
 

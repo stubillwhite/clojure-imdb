@@ -1,8 +1,8 @@
-CREATE TABLE actors
+CREATE TABLE persons
 (
   id text NOT NULL,
   name text,
-  CONSTRAINT actors_pk PRIMARY KEY (id)
+  CONSTRAINT persons_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE films
@@ -12,8 +12,8 @@ CREATE TABLE films
   CONSTRAINT films_pk PRIMARY KEY (id)
 );
 
-CREATE TABLE films_actors
+CREATE TABLE films_persons
 (
   film_id text NOT NULL REFERENCES films (id),
-  actor_id text NOT NULL REFERENCES actors (id)
+  person_id text NOT NULL REFERENCES persons (id)
 );

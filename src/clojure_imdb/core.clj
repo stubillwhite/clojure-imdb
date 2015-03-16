@@ -10,21 +10,21 @@
   ([]
     (str (java.util.UUID/randomUUID))))
 
-(defn create-actor
-  ([actor]
+(defn create-person
+  ([person]
     (let [ id (generate-id)
-           {:keys [:name]} actor ]
-      (debug (format "Creating actor %s with content %s" id actor))
-      (db/create-actor! db/yesql-config id name)
+           {:keys [:name]} person ]
+      (debug (format "Creating person %s with content %s" id person))
+      (db/create-person! db/yesql-config id name)
       id)))
 
-(defn get-actor
+(defn get-person
   ([id]
-    (first (db/get-actor db/yesql-config id))))
+    (first (db/get-person db/yesql-config id))))
 
-(defn get-actors
+(defn get-persons
   ([]
-    (seq (db/get-actors db/yesql-config))))
+    (seq (db/get-persons db/yesql-config))))
 
 (defn create-film
   ([film]
@@ -38,8 +38,8 @@
   ([id]
     (first (db/get-film db/yesql-config id))))
 
-(defn link-film-to-actor
-  ([film-id actor-id]
-    (debug (format "Linking film %s with actor %s" film-id actor-id))
-    (db/link-film-to-actor! db/yesql-config film-id actor-id)
-    { :film-id film-id :actor-id actor-id }))
+(defn link-film-to-person
+  ([film-id person-id]
+    (debug (format "Linking film %s with person %s" film-id person-id))
+    (db/link-film-to-person! db/yesql-config film-id person-id)
+    { :film-id film-id :person-id person-id }))

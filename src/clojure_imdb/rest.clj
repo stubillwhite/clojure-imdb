@@ -19,21 +19,21 @@
     (-> response
       (content-type "application/json"))))
 
-(defn- create-actor
-  ([actor]
-    (let [ id (core/create-actor actor) ]
-      (created (str "/actor/" id)))))
+(defn- create-person
+  ([person]
+    (let [ id (core/create-person person) ]
+      (created (str "/person/" id)))))
 
-(defn- get-actor
+(defn- get-person
   ([id]
     (with-response-defaults
-      (if-let [ actor (core/get-actor (str id)) ]
-        (response actor)
+      (if-let [ person (core/get-person (str id)) ]
+        (response person)
         (not-found id)))))
 
-(defn- get-all-actors
+(defn- get-all-persons
   ([]
-    (with-response-defaults (response (core/get-actors)))))
+    (with-response-defaults (response (core/get-persons)))))
 
 (defn- create-film
   ([film]
@@ -47,28 +47,28 @@
         (response film)
         (not-found id)))))
 
-(defn- link-film-to-actor
+(defn- link-film-to-person
   ([{:keys [:film-id :id]}]
     (with-response-defaults
-      (core/link-film-to-actor film-id id))))
+      (core/link-film-to-person film-id id))))
 
 (defroutes app-routes
-  (context "/actor/:id" [id]
+  (context "/person/:id" [id]
     (GET "/" []
-      (get-actor id)))
+      (get-person id)))
 
-  (context "/actors" []
+  (context "/persons" []
     (GET  "/" []
-      (get-all-actors))
+      (get-all-persons))
     (POST "/" {params :params}
-      (create-actor params)))
+      (create-person params)))
 
   (context "/film/:id" [id]
     (GET "/" []
       (get-film id)))
-  (context "/film/:film-id/actors" []
+  (context "/film/:film-id/persons" []
     (POST "/" {params :params}
-      (link-film-to-actor params)))
+      (link-film-to-person params)))
 
   (context "/films" []
     (POST "/" {params :params}
