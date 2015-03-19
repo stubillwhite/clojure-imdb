@@ -22,10 +22,6 @@
   ([id]
     (first (db/get-person db/yesql-config id))))
 
-(defn get-persons
-  ([]
-    (seq (db/get-persons db/yesql-config))))
-
 (defn create-film
   ([film]
     (let [ id (generate-id)
@@ -38,8 +34,20 @@
   ([id]
     (first (db/get-film db/yesql-config id))))
 
-(defn link-film-to-person
-  ([film-id person-id]
-    (debug (format "Linking film %s with person %s" film-id person-id))
-    (db/link-film-to-person! db/yesql-config film-id person-id)
-    { :film-id film-id :person-id person-id }))
+(defn create-role
+  ([role]
+    (let [ id (generate-id)
+           {:keys [:title]} role ]
+      (debug (format "Creating role %s with content %s" id role))
+      (db/create-role! db/yesql-config id title)
+      id)))
+
+(defn get-role
+  ([id]
+    (first (db/get-role db/yesql-config id))))
+
+(defn create-credit
+  ([film-id person-id role-id]
+    (debug (format "Creating credit for person %s as %s in film %s" person-id role-id film-id))
+    (db/create-credit! db/yesql-config film-id person-id role-id)
+    { :film-id film-id :person-id person-id :role-id role-id}))

@@ -2,6 +2,7 @@
   (:require
     [clojure-imdb.core :as core]
     [compojure.core :refer [defroutes context GET POST PUT DELETE]]
+    [compojure.route :as route]
     [ring.middleware.content-type :refer [wrap-content-type]]
     [ring.middleware.defaults :refer [wrap-defaults]]
     [ring.middleware.json :refer [wrap-json-body wrap-json-params wrap-json-response]]
@@ -31,10 +32,6 @@
         (response person)
         (not-found id)))))
 
-(defn- get-all-persons
-  ([]
-    (with-response-defaults (response (core/get-persons)))))
-
 (defn- create-film
   ([film]
     (let [ id (core/create-film film) ]
@@ -47,32 +44,53 @@
         (response film)
         (not-found id)))))
 
-(defn- link-film-to-person
-  ([{:keys [:film-id :id]}]
+(defn- create-credit
+  ([{:keys [:film-id :person-id :role-id]}]
     (with-response-defaults
-      (core/link-film-to-person film-id id))))
+      (core/create-credit film-id person-id role-id))))
 
+(defn- create-role
+  ([role]
+    (let [ id (core/create-role role) ]
+      (created (str "/role/" id)))))
+
+(defn- get-role
+  ([id]
+    (with-response-defaults
+      (if-let [ role (core/get-role (str id)) ]
+        (response role)
+        (not-found id)))))
+
+
+;; TODO Sort out id params
 (defroutes app-routes
   (context "/person/:id" [id]
     (GET "/" []
       (get-person id)))
 
   (context "/persons" []
-    (GET  "/" []
-      (get-all-persons))
     (POST "/" {params :params}
       (create-person params)))
 
   (context "/film/:id" [id]
     (GET "/" []
       (get-film id)))
-  (context "/film/:film-id/persons" []
+  (context "/film/:film-id/credits" []
     (POST "/" {params :params}
-      (link-film-to-person params)))
+      (create-credit params)))
 
   (context "/films" []
     (POST "/" {params :params}
-      (create-film params))))
+      (create-film params)))
+
+  (context "/roles" []
+    (POST "/" {params :params}
+      (create-role params)))
+  (context "/role/:id" [id]
+    (GET "/" []
+      (get-role id)))
+
+  (route/not-found (not-found "Not found")))
 
 (def default-config
   { :params { :urlencoded true

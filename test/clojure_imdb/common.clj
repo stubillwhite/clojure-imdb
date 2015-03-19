@@ -33,21 +33,17 @@
 (defn create-person [person]
   (get-location (app-post "/persons" person)))
 
-(defn create-person-and-get-id
-  ([person]
-    (get-id (create-person person))))
-
 (defn create-film
   ([film]
     (get-location (app-post "/films" film))))
 
-(defn create-film-and-get-id
-  ([film]
-    (get-id (create-film film))))
+(defn create-role
+  ([role]
+    (get-location (app-post "/roles" role))))
 
-(defn link-film-to-person
-  ([film-id person-id]
-    (app-post (str "/film/" film-id "/persons/") { :id person-id })))
+(defn create-credit
+  ([film-id person-id role-id]
+    (app-post (format "/film/%s/credits" film-id) { :person-id person-id :role-id role-id })))
 
 (defn with-id
   ([person id]

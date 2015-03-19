@@ -3,73 +3,57 @@
     [clojure-imdb.infrastructure :refer [clean datasource]]
     [clojure-imdb.common]))
 
-(defn- member-of?
-  ([x vals]
-    (some #{x} vals)))
+(clean datasource)
 
-(defn- load-persons
-  ([acc persons]
-    (reduce
-      (fn [acc x]
-        (if (member-of? x (keys (acc :persons)))
-          acc
-          (assoc-in acc [:persons x] (create-person-and-get-id {:name x}))))
-      acc
-      persons)))
+(defn add-film
+  ([acc title]
+    (update-in acc [:films title] (fn [x] (or x (get-id (create-film { :title title })))))))
 
-(defn- load-films
-  ([acc films]
-    (reduce
-      (fn [acc x]
-        (if (member-of? x (keys (acc :films)))
-          acc
-          (assoc-in acc [:films x] (create-film-and-get-id {:title x}))))
-      acc
-      films)))
+(defn add-role
+  ([acc title]
+    (update-in acc [:roles title] (fn [x] (or x (get-id (create-role { :title title })))))))
 
-(defn- load-films-to-persons
-  ([acc [film persons]]
-    (doall (for [person persons]
-             (let [ film-id  (get-in acc [:films film])
-                    person-id (get-in acc [:persons person]) ]
-               (link-film-to-person film-id person-id))))
-    acc))
+(defn add-person
+  ([acc name]
+    (update-in acc [:persons name] (fn [x] (or x (get-id (create-person { :name name })))))))
 
-(defn- load-films-and-persons
-  ([acc [film persons]]
-    (-> acc
-      (load-films [film])
-      (load-persons persons)
-      (load-films-to-persons [film persons]))))
+(defn add-credit
+  ([acc film-id person-id role-id]
+    (create-credit film-id person-id role-id)))
 
-(defn- load-dataset
-  ([dataset]
-    (reduce
-      load-films-and-persons
-      { :films  {}
-        :persons {} }
-      dataset)))
+(defn add
+  ([acc film-title role-title person-name]
+    (let [ make-credit (fn [acc] (let [ film-id   (get-in acc [:films film-title])
+                                       role-id   (get-in acc [:roles role-title])
+                                       person-id (get-in acc [:persons person-name]) ]
+                                  (add-credit acc film-id person-id role-id)
+                                  acc))]
+      (-> acc
+        (add-film film-title)
+        (add-role role-title)
+        (add-person person-name)
+        (make-credit)))))
 
-(defn load-sample-dataset
-  ([]
-    (clean datasource)
-    (load-dataset
-      [ [ "Star Wars" [ "Mark Hamill"
-                        "Carrie Fisher"
-                        "Alec Guinness"
-                        "Harrison Ford" ]]
+(defn accumulator
+  ([] { :films   {}
+        :persons {}
+        :roles   {}} ))
 
-        [ "Raiders of the Lost Ark" [ "Harrison Ford" ]]
+(-> (accumulator)
+  (add "Raiders of the Lost Ark" "Director" "Steven Spielberg")
+  (add "Raiders of the Lost Ark" "Cast"     "Harrison Ford")
+  (add "The 'Burbs"              "Director" "Joe Dante")
+  (add "The 'Burbs"              "Cast"     "Tom Hanks")
+  (add "The 'Burbs"              "Cast"     "Carrie Fisher")
+  (add "The 'Burbs"              "Cast"     "Corey Feldman")
+  (add "The 'Burbs"              "Cast"     "Corey Feldman")
+  (add "Unforgiven"              "Director" "Clint Eastwood")
+  (add "Unforgiven"              "Cast"     "Clint Eastwood")
+  (add "Unforgiven"              "Cast"     "Gene Hackman")
+  )
 
-        [ "The 'Burbs" [ "Tom Hanks"
-                         "Carrie Fisher"
-                         "Corey Feldman" ]]
 
-        [ "Dragnet" [ "Tom Hanks"
-                      "Dan Ackroyd" ]]
 
-        [ "Ghostbusters" [ "Dan Ackroyd"
-                           "Bill Murray"
-                           "Harold Ramis" ]]
-        ])))
+
+
 
