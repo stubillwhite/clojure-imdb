@@ -9,7 +9,10 @@
 
   :repl-options { :port 4555 }
 
-  :plugins [ [lein-ring "0.8.11"] ]
+  :plugins [ [cider/cider-nrepl "0.8.2"]
+             [lein-expectations "0.0.7"]
+             [lein-autoexpect "1.4.0"]
+             [lein-ring "0.8.11"] ]
 
   :ring { :handler clojure-imdb.rest/app
           :nrepl   { :start? true
@@ -33,7 +36,6 @@
                   [org.clojure/tools.trace "0.7.8"]
                   
                   ;; Testing
-                  [midje "1.6.3"]
                   [ring/ring-mock "0.2.0"]
 
                   ;; Persistence
@@ -44,5 +46,6 @@
 
   :profiles  { :dev  { :dependencies [ [javax.servlet/servlet-api "2.5"]
                                        [org.clojure/tools.namespace "0.2.10"]
-                                       [ring-mock "0.1.5"] ]
+                                       [ring-mock "0.1.5"]
+                                       [expectations "2.1.0"] ]
                        :source-paths ["dev"] } })
