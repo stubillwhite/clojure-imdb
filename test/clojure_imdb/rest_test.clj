@@ -49,10 +49,3 @@
 
 ;; Get role given role does not exist then not found
 (expect (resource-not-found) (app-get "/role/non-existent-id"))
-
-
-
-
-
-
-
