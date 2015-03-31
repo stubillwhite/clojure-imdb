@@ -26,10 +26,23 @@ SELECT * FROM roles WHERE id = :id
 -- Links a person to a particular role on a particular film.
 INSERT INTO credits (film_id, person_id, role_id) VALUES (:film_id, :person_id, :role_id)
 
--- name: films-to-persons
--- TODO: Testing, should be removed
-SELECT f.title, r.title, p.name FROM credits c
-  JOIN films f ON c.film_id = f.id
-  JOIN persons p ON c.person_id = p.id
-  JOIN roles r ON c.role_id = r.id
+-- name: get-film-credits
+-- Returns the credits for a paticular film.
+SELECT 
+  f.title, 
+  p.name, 
+  r.title
+FROM 
+  credits c, 
+  films f, 
+  persons p, 
+  roles r
+WHERE 
+  c.film_id = f.id AND
+  c.person_id = p.id AND
+  c.role_id = r.id AND
+  c.film_id = :id
 
+-- name: find-person-by-name
+-- Returns the persons whose name matches a particular string
+SELECT * FROM persons p WHERE p.name LIKE :str

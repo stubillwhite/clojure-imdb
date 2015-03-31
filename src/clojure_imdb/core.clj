@@ -51,3 +51,7 @@
     (debug (format "Creating credit for person %s as %s in film %s" person-id role-id film-id))
     (db/create-credit! db/yesql-config film-id person-id role-id)
     { :film-id film-id :person-id person-id :role-id role-id}))
+
+(defn get-film-credits
+  ([film-id]
+    (db/get-film-credits db/yesql-config film-id)))

@@ -10,4 +10,3 @@
     :subname     "//localhost:5432/clojure-imdb-dev"
     :user        "stubillwhite"
     :password    "testpassword" })
-

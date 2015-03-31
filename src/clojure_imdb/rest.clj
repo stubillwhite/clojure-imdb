@@ -44,6 +44,11 @@
         (response film)
         (not-found id)))))
 
+(defn- get-film-credits
+  ([{:keys [:film-id]}]
+    (with-response-defaults
+      (core/get-film-credits film-id))))
+
 (defn- create-credit
   ([{:keys [:film-id :person-id :role-id]}]
     (with-response-defaults
@@ -76,6 +81,8 @@
     (GET "/" []
       (get-film id)))
   (context "/film/:film-id/credits" []
+    (GET "/" {params :params}
+      (get-film-credits params))
     (POST "/" {params :params}
       (create-credit params)))
 
