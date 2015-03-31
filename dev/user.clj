@@ -20,8 +20,7 @@
     [clojure-imdb.infrastructure :as infrastructure])
   (:use
     [clojure-imdb.persistence :as persistence]
-    [clojure-imdb.sample-dataset :as sample-dataset]
-    [midje.repl]))
+    [clojure-imdb.sample-dataset :as sample-dataset]))
 
 (def system
   "A Var containing an object representing the application under development."
