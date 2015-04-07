@@ -4,7 +4,7 @@
     [taoensso.timbre :as timbre]))
 
 (timbre/refer-timbre)
-(timbre/set-level! :warn)
+(timbre/set-level! :debug)
 
 (defn- generate-id
   ([]
@@ -18,6 +18,11 @@
       (db/create-person! db/yesql-config id name)
       id)))
 
+(defn find-person
+  ([name]
+    (db/find-persons-by-name db/yesql-config name)))
+
+;; TODO Use only rather than first
 (defn get-person
   ([id]
     (first (db/get-person db/yesql-config id))))
@@ -55,3 +60,8 @@
 (defn get-film-credits
   ([film-id]
     (db/get-film-credits db/yesql-config film-id)))
+
+(defn find-persons-by-name
+  ([name]
+    (debug "Searching for persons matching %s" name)
+    (db/find-persons-by-name db/yesql-config name)))

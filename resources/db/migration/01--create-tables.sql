@@ -2,6 +2,7 @@ CREATE TABLE persons
 (
   id   text NOT NULL,
   name text NOT NULL,
+  ft   tsvector NOT NULL,
   CONSTRAINT persons_pk PRIMARY KEY (id)
 );
 

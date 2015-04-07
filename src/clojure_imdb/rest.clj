@@ -6,7 +6,7 @@
     [ring.middleware.content-type :refer [wrap-content-type]]
     [ring.middleware.defaults :refer [wrap-defaults]]
     [ring.middleware.json :refer [wrap-json-body wrap-json-params wrap-json-response]]
-    [ring.util.response :refer [response created not-found content-type]]
+    [ring.util.response :refer [response created not-found content-type redirect]]
     [taoensso.timbre :as timbre]))
 
 (timbre/refer-timbre)
@@ -24,6 +24,11 @@
   ([person]
     (let [ id (core/create-person person) ]
       (created (str "/person/" id)))))
+
+(defn- find-person
+  ([{:keys [name]}]
+    (with-response-defaults
+      (response (core/find-person name)))))
 
 (defn- get-person
   ([id]
@@ -66,37 +71,30 @@
         (response role)
         (not-found id)))))
 
-
-;; TODO Sort out id params
 (defroutes app-routes
+  (context "/person" []
+    (GET  "/"  {params :params} (find-person params)))
   (context "/person/:id" [id]
-    (GET "/" []
-      (get-person id)))
-
+    (GET  "/" [] (get-person id)))
   (context "/persons" []
-    (POST "/" {params :params}
-      (create-person params)))
+    (POST "/" {params :params} (create-person params)))
 
   (context "/film/:id" [id]
-    (GET "/" []
-      (get-film id)))
+    (GET  "/" [] (get-film id)))
   (context "/film/:film-id/credits" []
-    (GET "/" {params :params}
-      (get-film-credits params))
-    (POST "/" {params :params}
-      (create-credit params)))
+    (GET  "/" {params :params} (get-film-credits params))
+    (POST "/" {params :params} (create-credit params)))
 
   (context "/films" []
-    (POST "/" {params :params}
-      (create-film params)))
+    (POST "/" {params :params} (create-film params)))
 
   (context "/roles" []
-    (POST "/" {params :params}
-      (create-role params)))
+    (POST "/" {params :params} (create-role params)))
   (context "/role/:id" [id]
-    (GET "/" []
-      (get-role id)))
+    (GET "/" [] (get-role id)))
 
+  (GET "/" [] (redirect "/index.html"))
+  (route/resources "/")
   (route/not-found (not-found "Not found")))
 
 (def default-config

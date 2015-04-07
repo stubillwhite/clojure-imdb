@@ -1,10 +1,10 @@
 -- name: create-person!
 -- Creates an person.
-INSERT INTO persons (id, name) VALUES (:id, :name)
+INSERT INTO persons (id, name, ft) VALUES (:id, :name, to_tsvector('english', :name))
 
 -- name: get-person
 -- Returns an person by ID.
-SELECT * FROM persons WHERE id = :id
+SELECT p.name, p.id FROM persons p WHERE id = :id
 
 -- name: create-film!
 -- Creates a film.
@@ -43,6 +43,6 @@ WHERE
   c.role_id = r.id AND
   c.film_id = :id
 
--- name: find-person-by-name
+-- name: find-persons-by-name
 -- Returns the persons whose name matches a particular string
-SELECT * FROM persons p WHERE p.name LIKE :str
+SELECT p.id, p.name FROM persons p WHERE p.ft @@ plainto_tsquery(:query)

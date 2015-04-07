@@ -50,10 +50,7 @@
   (add "Unforgiven"              "Director" "Clint Eastwood")
   (add "Unforgiven"              "Cast"     "Clint Eastwood")
   (add "Unforgiven"              "Cast"     "Gene Hackman")
+  (add "Top Gun"                 "Cast"     "Tom Cruise")
+  (add "Days of Thunder"         "Cast"     "Tom Cruise")
   )
-
-
-
-
-
 

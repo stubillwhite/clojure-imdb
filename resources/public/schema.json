@@ -1,0 +1,17 @@
+{
+  "types": {
+    "role": {
+      "title": "String",
+      "id": "String"
+    },
+    "role": {
+      "title": "String",
+      "id": "String"
+    },
+    "person": {
+      "name": "String",
+      "id": "String"
+    }
+  },
+  "version": "1"
+}
